@@ -138,3 +138,24 @@ def test_annotation_stats():
         "max": 5.0,
     }
     assert finite.annotation_stats([[0, 0]]) == {"min": 0.0, "median": 0.0, "max": 0.0}
+
+
+def test_jackknife_matches_brute_force_over_annotators():
+    rng = np.random.default_rng(8)
+    counts = rng.integers(0, 4, size=(30, 3))
+    counts[counts.sum(axis=1) < 2] = [1, 1, 0]
+    probs = rng.dirichlet(np.ones(3), size=30)
+    fast = finite.jackknife_items(counts, probs)
+    for i in range(30):
+        annotations = np.repeat(np.arange(3), counts[i])
+        n = len(annotations)
+        full = M.item_metrics(counts[i : i + 1], probs[i : i + 1])
+        left_out = {name: 0.0 for name in finite.CORRECTABLE}
+        for j in range(n):
+            rest = np.bincount(np.delete(annotations, j), minlength=3)[None, :]
+            values = M.item_metrics(rest, probs[i : i + 1])
+            for name in finite.CORRECTABLE:
+                left_out[name] += values[name][0] / n
+        for name in finite.CORRECTABLE:
+            expected = n * full[name][0] - (n - 1) * left_out[name]
+            assert fast[name][i] == pytest.approx(expected, abs=1e-9)
