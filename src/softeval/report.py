@@ -66,6 +66,6 @@ def _clean(value: Any) -> Any:
 
 def interval(low: float | None, high: float | None, digits: int = 4) -> str:
     """Format a confidence interval as ``[low, high]``."""
-    if low is None or high is None:
+    if low is None or high is None or math.isnan(low) or math.isnan(high):
         return "n/a"
     return f"[{fmt(float(low), digits)}, {fmt(float(high), digits)}]"
