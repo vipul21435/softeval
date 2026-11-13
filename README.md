@@ -93,8 +93,10 @@ softeval simulate                          # bias of each estimate at 3, 5, 10 a
 ```
 
 Every command takes `--format json`. `score`, `ceiling`, `compare` and `bands` take `--annotations M` to keep
-only M randomly chosen annotators per item, `--ties split|any|exclude` and `--seed`. `examples/quickstart.py`
-does the same through the Python API.
+only M randomly chosen annotators per item, `--ties split|any|exclude` and `--seed`. `bands` groups items by
+the share of annotators on the most common label, or by entropy with `--by entropy`; its Markdown table shows
+six of the metrics and its JSON output all of them. `examples/quickstart.py` does the same through the Python
+API.
 
 ### Input
 
