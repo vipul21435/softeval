@@ -1,0 +1,8 @@
+{"id": "q1", "annotations": ["entailment", "entailment", "entailment", "entailment", "entailment"]}
+{"id": "q2", "annotations": ["entailment", "entailment", "entailment", "neutral", "neutral"]}
+{"id": "q3", "annotations": ["neutral", "neutral", "contradiction", "contradiction", "entailment"]}
+{"id": "q4", "annotations": ["contradiction", "contradiction", "contradiction", "contradiction", "neutral"]}
+{"id": "q5", "annotations": ["neutral", "neutral", "neutral", "entailment", "contradiction"]}
+{"id": "q6", "annotations": ["entailment", "entailment", "neutral", "neutral"]}
+{"id": "q7", "annotations": ["contradiction", "contradiction", "contradiction", "contradiction", "contradiction"]}
+{"id": "q8", "annotations": []}

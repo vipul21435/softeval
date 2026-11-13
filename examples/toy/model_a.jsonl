@@ -1,0 +1,8 @@
+{"id": "q1", "probs": {"entailment": 0.90, "neutral": 0.08, "contradiction": 0.02}}
+{"id": "q2", "probs": {"entailment": 0.55, "neutral": 0.40, "contradiction": 0.05}}
+{"id": "q3", "probs": {"entailment": 0.20, "neutral": 0.45, "contradiction": 0.35}}
+{"id": "q4", "probs": {"entailment": 0.05, "neutral": 0.25, "contradiction": 0.70}}
+{"id": "q5", "probs": {"entailment": 0.25, "neutral": 0.50, "contradiction": 0.25}}
+{"id": "q6", "probs": {"entailment": 0.45, "neutral": 0.50, "contradiction": 0.05}}
+{"id": "q7", "probs": {"entailment": 0.02, "neutral": 0.08, "contradiction": 0.90}}
+{"id": "q8", "probs": {"entailment": 0.30, "neutral": 0.40, "contradiction": 0.30}}
