@@ -139,8 +139,8 @@ leading term is `(K - 1) / (2n)` for *K* labels. softeval reports, next to the p
   `1/n` ([Jackknife resampling](https://en.wikipedia.org/wiki/Jackknife_resampling)). Removing an annotator who
   chose label *k* happens for *c_k* of the *n* annotators, so the mean is a weighted sum over labels and needs
   no sampling;
-- a split-half extrapolation, `(n D_n - h D_h) / (n - h)` with `D_h` the metric on a random half of
-  `h = n // 2` annotators, averaged over random halves, under the same `1/n` assumption;
+- a split-half extrapolation, `(n D_n - r D_r) / (n - r)` with `D_r` the metric on a random half of
+  `r = n // 2` annotators, averaged over random halves, under the same `1/n` assumption;
 - for KL, the plug-in value minus `(m - 1) / (2n)` with *m* labels observed, the first-order correction of the
   plug-in entropy usually called Miller-Madow (background:
   [Entropy estimation](https://en.wikipedia.org/wiki/Entropy_estimation)).
@@ -241,7 +241,7 @@ for 1,514 SNLI, 1,599 MNLI and 1,532 alphaNLI development items, next to the lab
 original dataset. Its repository states the licence as Creative Commons Attribution-NonCommercial 4.0, so no
 ChaosNLI data is committed here; the scripts below download it.
 
-What could not be run: the authors also published saved predictions of several fine-tuned models. On
+What could not be run: the authors also published saved predictions of several models. On
 2026-11-13 the two download links in their repository (the dataset archive and the prediction archive) served
 a "file deleted" page. The dataset files are available from a
 [preservation mirror](https://huggingface.co/datasets/earino/chaosnli) (same licence; `fetch.py` checks the
@@ -441,8 +441,8 @@ uv run --extra dev ruff check .
 uv run --extra dev pytest -q --cov=softeval
 ```
 
-92 tests, offline, about 11 seconds on Python 3.12 (measured on a loaded laptop); line and branch coverage
-97 %.
+98 tests, offline, about 13 seconds on Python 3.12 (measured on a loaded laptop); line and branch coverage
+99 %. The same suite passes on Python 3.10 and 3.13.
 
 ## Licence
 
