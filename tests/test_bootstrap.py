@@ -109,3 +109,14 @@ def test_hard_model_in_a_pair_and_bad_arguments():
         bootstrap.bootstrap_metrics(a, level=1.5)
     with pytest.raises(ValueError, match="same items"):
         bootstrap.paired_bootstrap(a, M.item_metrics(counts[:10], model[:10]))
+
+
+def test_constant_prediction_has_no_entropy_correlation():
+    counts, _ = _population(8, n_items=120)
+    constant = np.tile([0.5, 0.3, 0.2], (120, 1))
+    items = M.item_metrics(counts, constant)
+    assert math.isnan(M.aggregate(items)["entropy_pearson"])
+    assert math.isnan(M.aggregate(items)["entropy_spearman"])
+    out = bootstrap.bootstrap_metrics(items, n_boot=40)
+    assert math.isnan(out["entropy_pearson"].low) and math.isnan(out["entropy_pearson"].value)
+    assert math.isfinite(out["total_variation"].low)

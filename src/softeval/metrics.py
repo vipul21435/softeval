@@ -237,7 +237,7 @@ def pearson(x: ArrayLike, y: ArrayLike) -> float:
     """Pearson correlation; ``nan`` when either side is constant or there are under two points."""
     a = np.asarray(x, dtype=np.float64)
     b = np.asarray(y, dtype=np.float64)
-    if a.size < 2:
+    if a.size < 2 or is_constant(a) or is_constant(b):
         return float("nan")
     a = a - a.mean()
     b = b - b.mean()
@@ -245,6 +245,12 @@ def pearson(x: ArrayLike, y: ArrayLike) -> float:
     if denom <= 0 or not np.isfinite(denom):
         return float("nan")
     return float(np.clip((a * b).sum() / denom, -1.0, 1.0))
+
+
+def is_constant(values: FloatArray) -> bool:
+    """True when the values differ by no more than rounding error."""
+    spread = float(values.max() - values.min())
+    return spread <= 1e-12 * max(1.0, float(np.abs(values).max()))
 
 
 def spearman(x: ArrayLike, y: ArrayLike) -> float:

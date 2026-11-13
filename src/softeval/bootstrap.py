@@ -81,8 +81,14 @@ def _row_pearson(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     xc = x - x.mean(axis=1, keepdims=True)
     yc = y - y.mean(axis=1, keepdims=True)
     denom = np.sqrt((xc * xc).sum(axis=1) * (yc * yc).sum(axis=1))
+    flat = _row_constant(x) | _row_constant(y)
     with np.errstate(invalid="ignore", divide="ignore"):
-        return np.where(denom > 0, (xc * yc).sum(axis=1) / denom, np.nan)
+        return np.where((denom > 0) & ~flat, (xc * yc).sum(axis=1) / denom, np.nan)
+
+
+def _row_constant(values: np.ndarray) -> np.ndarray:
+    spread = values.max(axis=1) - values.min(axis=1)
+    return spread <= 1e-12 * np.maximum(1.0, np.abs(values).max(axis=1))
 
 
 def _resampled(items: dict[str, FloatArray], hard: bool, idx: np.ndarray) -> dict[str, np.ndarray]:
