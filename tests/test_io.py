@@ -133,3 +133,41 @@ def test_write_jsonl_round_trip(tmp_path):
     io.write_jsonl(path, [{"id": "a", "counts": {"y": 2, "n": 1}}])
     assert json.loads(path.read_text()) == {"counts": {"n": 1, "y": 2}, "id": "a"}
     assert io.read_human(path).counts.tolist() == [[1, 2]]
+
+
+def test_more_human_errors(tmp_path):
+    def bad(name, text, match, **kwargs):
+        with pytest.raises(io.InputError, match=match):
+            io.read_human(_write(tmp_path / name, text), **kwargs)
+
+    bad("a.jsonl", '{"id": 1, "counts": {"y": true, "n": 1}}\n', "expected a number")
+    bad("b.jsonl", '{"id": 1, "counts": {"y": "inf", "n": 1}}\n', "finite number")
+    bad("c.jsonl", '{"id": 1, "label": "y"}\n', "at least two labels", labels="y")
+    bad(
+        "d.jsonl", '{"id": 1, "counts": [1, 2]}\n{"id": 1, "counts": [1, 2, 3]}\n', "changes length"
+    )
+    bad("e.jsonl", '{"id": 1, "counts": 3}\n', "object or a list")
+    bad("f.jsonl", '{"id": 1, "annotations": "y"}\n', "list of labels")
+    bad("g.jsonl", '{"id": 1, "counts": [1, 2]}\n{"id": 2, "label": "y"}\n', "both as lists")
+    bad("h.jsonl", '{"id": 1, "counts": [1, 2]}\n{"id": 2, "counts": [1, 2, 3]}\n', "different")
+    bad("i.jsonl", '{"id": 1, "counts": {"y": -1, "n": 2}}\n', "negative count")
+
+
+def test_repeated_rows_add_up_and_blank_annotations_are_skipped(tmp_path):
+    path = _write(
+        tmp_path / "h.jsonl",
+        '{"id": "a", "counts": [1, 2]}\n{"id": "a", "counts": [2, 0]}\n',
+    )
+    assert io.read_human(path).counts.tolist() == [[3, 2]]
+    path = _write(tmp_path / "l.jsonl", '{"id": "a", "annotations": ["y", null, "", "n", "y"]}\n')
+    assert io.read_human(path).counts.tolist() == [[1, 2]]
+
+
+def test_more_prediction_errors(tmp_path):
+    labels = ["e", "n"]
+    with pytest.raises(io.InputError, match="no rows"):
+        io.read_predictions(_write(tmp_path / "a.csv", "id,label\n"), labels)
+    with pytest.raises(io.InputError, match="unknown label"):
+        io.read_predictions(_write(tmp_path / "b.jsonl", '{"id": 1, "probs": {"z": 1}}\n'), labels)
+    with pytest.raises(io.InputError, match="object or a list"):
+        io.read_predictions(_write(tmp_path / "c.jsonl", '{"id": 1, "probs": 0.5}\n'), labels)
