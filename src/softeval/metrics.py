@@ -221,15 +221,16 @@ def miller_madow_entropy(counts: ArrayLike) -> FloatArray:
 def rankdata(values: ArrayLike) -> FloatArray:
     """Ranks starting at 1, with tied values given the average of their ranks."""
     v = np.asarray(values, dtype=np.float64)
+    if v.size == 0:
+        return np.empty(0, dtype=np.float64)
     order = np.argsort(v, kind="mergesort")
+    position = np.empty(v.size, dtype=np.int64)
+    position[order] = np.arange(v.size)
     sorted_v = v[order]
-    ranks = np.empty(v.size, dtype=np.float64)
-    boundaries = np.flatnonzero(np.diff(sorted_v) != 0) + 1
-    starts = np.concatenate(([0], boundaries))
-    ends = np.concatenate((boundaries, [v.size]))
-    for start, end in zip(starts, ends, strict=True):
-        ranks[order[start:end]] = 0.5 * (start + end - 1) + 1.0
-    return ranks
+    new_group = np.concatenate(([True], sorted_v[1:] != sorted_v[:-1]))
+    group = np.cumsum(new_group)[position]
+    starts = np.concatenate((np.flatnonzero(new_group), [v.size]))
+    return 0.5 * (starts[group] + starts[group - 1] + 1)
 
 
 def pearson(x: ArrayLike, y: ArrayLike) -> float:
