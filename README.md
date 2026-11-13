@@ -53,8 +53,9 @@ Divergences corrected for the number of annotations (the plug-in value is too la
 | total variation distance | 0.0786 | -0.0964 | -0.0315 |  | 0.1750 |
 ```
 
-The second table is why the first one should not be read alone. With five annotators, the distances in the
-first table are smaller than the noise in the annotations: the corrected estimates come out below zero, which
+The second table is why the first one should not be read alone. With four or five annotators per item, the
+distances in the first table are smaller than the noise in the annotations: the corrected estimates come out
+below zero, which
 says that these seven items cannot distinguish model A from a model that matches the human distribution
 exactly. `softeval ceiling examples/toy/human.jsonl --labels entailment,neutral,contradiction` says the same
 from the other side: the human distribution itself, scored against as many fresh annotators as each item has,
@@ -95,8 +96,8 @@ softeval simulate                          # bias of each estimate at 3, 5, 10 a
 Every command takes `--format json`. `score`, `ceiling`, `compare` and `bands` take `--annotations M` to keep
 only M randomly chosen annotators per item, `--ties split|any|exclude` and `--seed`. `bands` groups items by
 the share of annotators on the most common label, or by entropy with `--by entropy`; its Markdown table shows
-six of the metrics and its JSON output all of them. `examples/quickstart.py` does the same through the Python
-API.
+six of the metrics and its JSON output all of them. `examples/quickstart.py` shows the same steps through the
+Python API.
 
 ### Input
 
