@@ -11,3 +11,4 @@ dist/
 htmlcov/
 uv.lock
 .DS_Store
+/data
