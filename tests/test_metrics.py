@@ -161,3 +161,32 @@ def test_softmax_and_validation():
         M.item_metrics([[1, 2, 3]], [[0.5, 0.5]])
     with pytest.raises(ValueError, match="out of range"):
         M.one_hot([3], 3)
+
+
+def test_more_validation_and_degenerate_inputs():
+    with pytest.raises(ValueError, match="two label columns"):
+        M.as_counts([[1], [2]])
+    with pytest.raises(ValueError, match="finite"):
+        M.as_counts([[1, float("inf")]])
+    with pytest.raises(ValueError, match="2-D"):
+        M.as_probs([0.5, 0.5])
+    with pytest.raises(ValueError, match="finite"):
+        M.as_probs([[0.5, float("nan")]])
+    with pytest.raises(ValueError, match="negative"):
+        M.as_probs([[1.5, -0.5]])
+    with pytest.raises(ValueError, match="1-D"):
+        M.one_hot([[0, 1]], 2)
+    with pytest.raises(ValueError, match="2-D"):
+        M.softmax([0.0, 1.0])
+    assert M.rankdata([]).size == 0
+    assert math.isnan(M.pearson([1.0], [2.0]))
+    assert M.is_constant(np.array([2.0, 2.0 + 1e-15]))
+    assert not M.is_hard(np.empty((0, 3)))
+
+
+def test_top_level_exports():
+    import softeval
+
+    assert softeval.summarise is M.summarise
+    assert set(softeval.__all__) >= {"summarise", "item_metrics", "read_human", "paired_bootstrap"}
+    assert softeval.__version__ == "0.1.0"
