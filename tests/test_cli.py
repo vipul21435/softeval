@@ -246,3 +246,22 @@ def test_quickstart_example_runs(capsys):
     assert "items scored: 7, without annotations: 1" in out
     assert "model A total_variation: 0.0786" in out
     assert "one annotator vs the others, match: 0.5476" in out
+
+
+def test_every_command_survives_a_file_without_any_annotation(capsys, tmp_path):
+    human = tmp_path / "empty.jsonl"
+    human.write_text('{"id": "a", "annotations": []}\n{"id": "b", "annotations": []}\n')
+    preds = tmp_path / "p.jsonl"
+    preds.write_text('{"id": "a", "probs": [0.5, 0.5]}\n{"id": "b", "label": "y"}\n')
+    h, p = str(human), str(preds)
+    code, out, _ = run(capsys, "score", h, p, "--labels", "y,n", "--bootstrap", "5")
+    assert code == 0 and "Items scored: 0 (no annotations: 2;" in out
+    assert "| total variation distance | n/a | n/a |" in out
+    code, out, _ = run(capsys, "ceiling", h, "--labels", "y,n", "--draws", "2")
+    assert code == 0 and "Items: 0 annotated" in out
+    code, out, _ = run(capsys, "bands", h, p, "--labels", "y,n")
+    assert code == 0 and "| all | 0 |" in out
+    code, out, _ = run(capsys, "compare", h, p, p, "--labels", "y,n", "--bootstrap", "5")
+    assert code == 0 and "Items scored: 0" in out
+    code, out, _ = run(capsys, "score", h, p, "--labels", "y,n", "--annotations", "3")
+    assert code == 0

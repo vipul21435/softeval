@@ -441,7 +441,7 @@ uv run --extra dev ruff check .
 uv run --extra dev pytest -q --cov=softeval
 ```
 
-98 tests, offline, about 13 seconds on Python 3.12 (measured on a loaded laptop); line and branch coverage
+99 tests, offline, about 13 seconds on Python 3.12 (measured on a loaded laptop); line and branch coverage
 99 %. The same suite passes on Python 3.10 and 3.13.
 
 ## Licence
