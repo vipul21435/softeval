@@ -6,7 +6,9 @@ Three reference points, all computed from the annotations alone:
   labels of the remaining annotators of that item (leave-one-out, averaged over annotators);
 - the full distribution against a fresh sample: the empirical distribution of all annotators is
   scored against ``m`` new annotators drawn from it, which is what a model that predicted the human
-  distribution exactly would get at ``m`` annotations;
+  distribution exactly would get at ``m`` annotations. That is optimal in expectation for
+  cross-entropy, match and accuracy; for the other distances it is a reference point, since against
+  very few annotators a sharper prediction can score lower;
 - half against half: the distribution of a random half of the annotators is scored against the
   other half.
 """

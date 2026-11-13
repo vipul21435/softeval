@@ -133,7 +133,8 @@ cross-entropy, KL and the entropy correlations are then undefined and print as `
 Few annotations. Treat an item's annotators as *n* draws from a population distribution. The observed
 distribution is then right on average, so the metrics that are linear in it (cross-entropy, match) are unbiased
 at any *n*. The divergences are convex in it, so their plug-in values are too large on average; for KL the
-leading term is `(K - 1) / (2n)` for *K* labels. softeval reports, next to the plug-in value:
+leading term is `(K - 1) / (2n)` for *K* labels with non-zero probability. softeval reports, next to the
+plug-in value:
 
 - the leave-one-annotator-out jackknife, `n D_n - (n - 1) mean_j D_(-j)`, which removes a bias proportional to
   `1/n` ([Jackknife resampling](https://en.wikipedia.org/wiki/Jackknife_resampling)). Removing an annotator who
@@ -156,7 +157,9 @@ Ceilings, from the annotations alone:
   annotators of the item agree;
 - the full distribution against a fresh sample: the observed distribution is scored against `m` new annotators
   drawn from it. This is what a model that predicted the human distribution exactly would get with `m`
-  annotations, so it is the floor for the distances and the ceiling for match and accuracy;
+  annotations. For cross-entropy, match and accuracy no prediction does better in expectation. For KL,
+  Jensen-Shannon and total variation it is the reference point rather than a strict bound: against very few
+  annotators a sharper prediction can score lower than the exact one;
 - half against half: the distribution of a random half of the annotators (with 0.5 added to each count) scored
   against the other half.
 
