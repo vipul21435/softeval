@@ -232,3 +232,17 @@ def test_simulate_markdown_and_json(capsys):
     assert code == 2 and "whole numbers" in err
     code, _, err = run(capsys, "simulate", "--annotations", "1,5")
     assert code == 2 and "at least 2" in err
+
+
+def test_quickstart_example_runs(capsys):
+    import importlib.util
+
+    path = TOY.parent / "quickstart.py"
+    spec = importlib.util.spec_from_file_location("softeval_quickstart", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.main()
+    out = capsys.readouterr().out
+    assert "items scored: 7, without annotations: 1" in out
+    assert "model A total_variation: 0.0786" in out
+    assert "one annotator vs the others, match: 0.5476" in out
